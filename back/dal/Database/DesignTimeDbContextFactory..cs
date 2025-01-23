@@ -1,3 +1,4 @@
+using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
@@ -9,16 +10,21 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<DataContex
     public DataContext CreateDbContext(string[] args)
     {
 
-        var config = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false)
+        Env.Load();
+
+        IConfiguration config = new ConfigurationBuilder()
+            .AddEnvironmentVariables()
             .Build();
 
-        string connectionString = config.GetConnectionString("meero");
+        string? connectionString = config["DB_CONNECTION_STRING"];
 
-        Console.WriteLine(connectionString);
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            throw new ArgumentNullException(connectionString, "Connection string is missing or empty.");
+        }
 
-        var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
+
+        var optionsBuilder  = new DbContextOptionsBuilder<DataContext>();
         optionsBuilder.UseSqlServer(connectionString, sqlServerOptionsAction: sqlOptions =>
         {
             sqlOptions.EnableRetryOnFailure(
