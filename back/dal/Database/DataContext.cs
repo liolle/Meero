@@ -4,8 +4,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace meero.Database;
 
-class DataContext : DbContext, IDataContext
+public class DataContext : DbContext, IDataContext
 {
+    public DataContext(DbContextOptions options) : base(options)
+    {
+    }
+
     public DbSet<UserEntity> Users {get;set;}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
