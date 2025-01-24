@@ -1,7 +1,7 @@
 using DotNetEnv;
 using meero.bll.Service;
 using meero.Database;
-using meero.entity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,8 +30,18 @@ builder.Services.AddScoped<IDataContext,DataContext>(
     }
 );
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(jwtOptions =>
+{
+	jwtOptions.Authority = configuration["JWT_ISSUER"];
+	jwtOptions.Audience = configuration["JWT_AUDIENCE"];
+    jwtOptions.RequireHttpsMetadata =false; // Allow HTTP in development
+});
+
+builder.Services.AddScoped<IJWTService, JWTService>();
 builder.Services.AddScoped(typeof(IPasswordHasher<>), typeof(PasswordHasher<>));
 
+builder.Services.AddTransient<IUserService,UserService>();
 builder.Services.AddTransient<IHashService,HasherService>();
 builder.Services.AddTransient<IAuthService,AuthService>();
 

@@ -18,4 +18,12 @@ public class UserService (IDataContext context) : IUserService
             return false;
         }
     }
+
+    public UserEntity? GetById(int id){
+        return context.Users.SingleOrDefault(u=>u.Id == id);
+    }
+
+    public UserEntity? GetByEmail(string email){
+        return context.Users.SingleOrDefault(u=>u.Email == email);
+    }
 }
