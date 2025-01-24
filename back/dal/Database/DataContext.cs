@@ -8,6 +8,7 @@ public class DataContext : DbContext, IDataContext
 {
     public DataContext(DbContextOptions options) : base(options)
     {
+        
     }
 
     public DbSet<UserEntity> Users {get;set;}
