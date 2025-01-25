@@ -1,21 +1,33 @@
 using meero.Database;
 using meero.entity;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace meero.bll.Service;
 
 public class UserService (IDataContext context) : IUserService
 {
-    public bool Insert(UserEntity user)
+    public string Insert(UserEntity user)
     {
         try
         {
             context.Users.Add(user);
             context.SaveChanges();
-            return true;
+            return "";
         }
-        catch (Exception)
+        catch (DbUpdateException dbEx)
         {
-            return false;
+            // Check for specific SQL exception (e.g., duplicate index on email)
+            if (dbEx.InnerException is SqlException sqlEx && sqlEx.Number == 2601)
+            {
+                throw new DuplicateEmailException();
+            }
+
+            throw new DatabaseException();
+        }
+        catch (Exception )
+        {
+            throw new DatabaseException();
         }
     }
 

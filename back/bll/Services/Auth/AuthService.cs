@@ -6,28 +6,25 @@ public class AuthService(IUserService us, IHashService hashService, IJWTService 
     public string Login(UserModel user)
     {
         UserEntity? entity = us.GetByEmail(user.Email);
+        
         if (entity == null){
-            return "";
+            throw new UserNotFountException();
         }
 
         ApplicationUser applicationUser = new(){Name=entity.Name,Id=entity.Id,Role=entity.Role};
 
         if (!hashService.VerifyPassword(applicationUser,entity.Password,user.Password)){
-            return "";
+            throw new InvalidCredentialException();
         }
 
         return jwt.generate(applicationUser);
     }
 
-    public int Register(UserModel user){
+    public void Register(UserModel user){
         ApplicationUser idUser = new (){Name=user.Name, Role=ERole.User};
         string hashedPassword = hashService.HashPassword(idUser,user.Password);
         UserEntity userEntity = new(){Name=user.Name,Email=user.Email,Password=hashedPassword,Role=idUser.Role};
      
-        if (!us.Insert(userEntity)){
-            return -1;
-        }
-
-        return userEntity.Id;
+        us.Insert(userEntity);
     }
 }

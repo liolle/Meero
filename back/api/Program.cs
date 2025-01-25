@@ -4,6 +4,7 @@ using meero.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -30,6 +31,7 @@ builder.Services.AddScoped<IDataContext,DataContext>(
     }
 );
 
+// JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(jwtOptions =>
 {
@@ -38,6 +40,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     jwtOptions.RequireHttpsMetadata =false; // Allow HTTP in development
 });
 
+// Cors
+builder.Services.AddCors(options=>{
+    options.AddPolicy("auth-input", policy=>{
+        policy
+        .WithOrigins(["http://localhost:3000","http://localhost"])
+        .AllowCredentials()
+        .WithHeaders(HeaderNames.ContentType, "Authorization")
+        .WithMethods(["POST","OPTIONS"]);
+    });
+});
+
+// BLL services
 builder.Services.AddScoped<IJWTService, JWTService>();
 builder.Services.AddScoped(typeof(IPasswordHasher<>), typeof(PasswordHasher<>));
 
@@ -53,6 +67,7 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 app.UseHttpsRedirection();
+app.UseCors();
 app.UseAuthorization();
 
 RouteConfig.RegisterRoutes(app);

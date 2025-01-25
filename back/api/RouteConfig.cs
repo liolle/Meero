@@ -5,12 +5,12 @@ public static class RouteConfig
         app.MapControllerRoute(
             name: "register",
             pattern: "{controller=User}/{action=Register}/{id?}"
-        );
+        ).RequireCors("auth-input");
 
         app.MapControllerRoute(
-            name: "register",
+            name: "login",
             pattern: "{controller=User}/{action=Login}/{id?}"
-        );
+        ).RequireCors("auth-input");
     }
     
 }
