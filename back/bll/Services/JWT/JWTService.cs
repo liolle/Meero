@@ -63,4 +63,70 @@ public class JWTService : IJWTService
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
+
+    public ApplicationUser validate(string token)
+    {
+
+        if (_secretKey == null)
+        {
+            throw new ArgumentNullException(_secretKey, "The 'JWT_SECRET' configuration value is missing.");
+        }
+        if (_issuer == null)
+        {
+            throw new ArgumentNullException(_issuer, "The 'JWT_ISSUER' configuration value is missing.");
+        }
+        if (_audience == null)
+        {
+            throw new ArgumentNullException(_audience, "The 'JWT_AUDIENCE' configuration value is missing.");
+        }
+
+        try
+        {
+            
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_secretKey);
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = _issuer,
+                ValidAudience = _audience,
+                IssuerSigningKey = new SymmetricSecurityKey(key)
+            };
+
+            SecurityToken? validatedToken;
+            ClaimsPrincipal? principal = tokenHandler.ValidateToken(token, validationParameters, out validatedToken);
+
+            if (validatedToken is not JwtSecurityToken jwtToken)
+            {
+                throw new InvalidTokenException();
+            }
+
+            Claim? userIdClaim = principal.FindFirst(ClaimTypes.NameIdentifier);
+            Claim? nameClaim = principal.FindFirst(ClaimTypes.Name);
+            Claim? roleClaim = principal.FindFirst(ClaimTypes.Role);
+
+            if (userIdClaim == null || nameClaim == null || roleClaim == null)
+            {
+                throw new InvalidTokenException();
+            }
+
+            ApplicationUser user = new ApplicationUser
+            {
+                Id = int.Parse(userIdClaim.Value),
+                Name = nameClaim.Value,
+                Role = Enum.TryParse<ERole>(roleClaim.Value, true, out ERole role)
+                    ? role
+                    : throw new InvalidTokenException()
+            };
+
+            return user;
+        }
+        catch (SecurityTokenException)
+        {
+            throw new InvalidTokenException();
+        }
+    }
 }

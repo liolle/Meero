@@ -3,6 +3,11 @@ namespace meero.bll.Service;
 
 
 public class AuthService(IUserService us, IHashService hashService, IJWTService jwt): IAuthService {
+    public ApplicationUser Auth(string token)
+    {
+        return jwt.validate(token);
+    }
+
     public string Login(UserModel user)
     {
         UserEntity? entity = us.GetByEmail(user.Email);

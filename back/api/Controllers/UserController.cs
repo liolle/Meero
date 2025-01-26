@@ -26,7 +26,6 @@ public class UserController(IAuthService auth, IConfiguration conf) : Controller
 
     [HttpPost]
     public IActionResult Login ([FromBody] UserModel model){
-
         try
         {
             string token = auth.Login(model);
@@ -38,7 +37,7 @@ public class UserController(IAuthService auth, IConfiguration conf) : Controller
                 SameSite = SameSiteMode.Strict, // Prevents CSRF attacks
                 Expires = DateTime.UtcNow.AddHours(1) // Set cookie expiration
             });
-            return Ok(new{token=token});
+            return Ok();
         }
         catch (InvalidCredentialException e)
         {
@@ -48,7 +47,27 @@ public class UserController(IAuthService auth, IConfiguration conf) : Controller
         {
             return Ok(new{message=e.Message});
         }
-     
+    }
+
+    [HttpPost]
+    public IActionResult Auth (){
+
+        string? token;
+
+
+        if (!Request.Cookies.TryGetValue(conf["AUTH_TOKEN_NAME"]!, out token))
+        {
+            return Unauthorized(new { message = "JWT token is missing." });
+        }
+
+        try
+        {
+            return Ok(auth.Auth(token));
+        }
+        catch (InvalidTokenException e)
+        {
+            return Unauthorized(new { message = e.Message });
+        }
     }
 
 }

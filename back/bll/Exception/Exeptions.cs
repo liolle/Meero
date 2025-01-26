@@ -34,3 +34,11 @@ public sealed class DatabaseException : ApiException
     {
     }
 }
+
+
+public sealed class InvalidTokenException : ApiException
+{
+    public InvalidTokenException() : base("Invalid token.")
+    {
+    }
+}
