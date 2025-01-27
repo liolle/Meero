@@ -22,5 +22,39 @@ public static class RouteConfig
             name: "auth",
             pattern: "{controller=User}/{action=Logout}/{id?}"
         ).RequireCors("auth-input");
+
+        // Hero
+        app.MapControllerRoute(
+            name: "auth",
+            pattern: "{controller=Hero}/{action=Add}/{id?}"
+        ).RequireAuthorization()
+        .RequireCors("auth-input");
+
+        app.MapControllerRoute(
+            name: "auth",
+            pattern: "{controller=Hero}/{action=Get}/{id?}"
+        );
+
+        app.MapControllerRoute(
+            name: "auth",
+            pattern: "{controller=Hero}/{action=All}/{id?}"
+        );
+
+        // Power
+        app.MapControllerRoute(
+            name: "auth",
+            pattern: "{controller=Power}/{action=Add}/{id?}"
+        ).RequireAuthorization()
+        .RequireCors("auth-input");
+
+        app.MapControllerRoute(
+            name: "auth",
+            pattern: "{controller=Power}/{action=Get}/{id?}"
+        );
+
+        app.MapControllerRoute(
+            name: "auth",
+            pattern: "{controller=Power}/{action=All}/{id?}"
+        );
     }
 }

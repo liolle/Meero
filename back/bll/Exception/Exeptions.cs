@@ -14,6 +14,13 @@ public sealed class DuplicateEmailException : ApiException
     }
 }
 
+public sealed class DuplicatePowerException : ApiException
+{
+    public DuplicatePowerException() : base("Power already exist")
+    {
+    }
+}
+
 public sealed class InvalidCredentialException : ApiException
 {
     public InvalidCredentialException() : base("Invalid credential")
