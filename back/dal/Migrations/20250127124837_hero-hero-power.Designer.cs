@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using meero.Database;
 
@@ -10,9 +11,11 @@ using meero.Database;
 namespace dal.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250127124837_hero-hero-power")]
+    partial class heroheropower
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -23,13 +26,13 @@ namespace dal.Migrations
 
             modelBuilder.Entity("HeroEntityPowerEntity", b =>
                 {
-                    b.Property<int>("HeroEntityId")
+                    b.Property<int>("HeroesId")
                         .HasColumnType("int");
 
                     b.Property<int>("PowersId")
                         .HasColumnType("int");
 
-                    b.HasKey("HeroEntityId", "PowersId");
+                    b.HasKey("HeroesId", "PowersId");
 
                     b.HasIndex("PowersId");
 
@@ -125,7 +128,7 @@ namespace dal.Migrations
                 {
                     b.HasOne("meero.entity.HeroEntity", null)
                         .WithMany()
-                        .HasForeignKey("HeroEntityId")
+                        .HasForeignKey("HeroesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
