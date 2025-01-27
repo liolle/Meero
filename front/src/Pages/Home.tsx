@@ -4,7 +4,7 @@ export const Home = () => {
   return (
     <MainLayout>
       <div class="h-full w-full flex justify-center items-center">
-        <span class=" text-neutral-200">Home</span>
+        <span class=" text-neutral-800">Home</span>
       </div>
     </MainLayout>
   )

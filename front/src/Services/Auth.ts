@@ -47,7 +47,7 @@ export const Auth = {
     }
   },
   Auth: async function():Promise<void>{
-     try {
+    try {
       const response = await fetch("http://localhost:5086/user/Auth", {
         credentials: "include",
         method: "POST",
@@ -64,10 +64,22 @@ export const Auth = {
         ) 
         setSession(s)
       }
+      else {
+        setSession(null)
+      }
 
     } catch (error) {
       throw error
     }
+  },
+  Logout: async function():Promise<void>{
+    await fetch("http://localhost:5086/user/Logout", {
+      credentials: "include",
+      method: "POST",
+    });
+    setSession(null)
 
   }
+
 }
+
