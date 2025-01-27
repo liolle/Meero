@@ -17,6 +17,10 @@ public static class RouteConfig
             pattern: "{controller=User}/{action=Auth}/{id?}"
         ).RequireAuthorization()
         .RequireCors("auth-input");
+
+        app.MapControllerRoute(
+            name: "auth",
+            pattern: "{controller=User}/{action=Logout}/{id?}"
+        ).RequireCors("auth-input");
     }
-    
 }

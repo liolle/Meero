@@ -70,4 +70,10 @@ public class UserController(IAuthService auth, IConfiguration conf) : Controller
         }
     }
 
+    [HttpPost]
+    public IActionResult Logout(){
+        HttpContext.Response.Cookies.Delete(conf["AUTH_TOKEN_NAME"]!);
+        return Ok();
+    }
+
 }
