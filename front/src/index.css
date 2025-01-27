@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+#nav-bar-link li:hover{
+  color: var(--accent)
+}
+
+#nav-bar-link li{
+  padding: 0 .5rem;
+  cursor: pointer;
+  color:#222222
+}
+
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -25,7 +36,7 @@
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
 
-    --accent: 240 4.8% 95.9%;
+    --accent: #21940f;
     --accent-foreground: 240 5.9% 10%;
 
     --destructive: 0 84.2% 60.2%;
