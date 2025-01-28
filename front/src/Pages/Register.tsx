@@ -1,6 +1,6 @@
 import { useNavigate } from "@solidjs/router";
 import { createSignal } from "solid-js";
-import { Auth } from "../Services/Auth";
+import { Auth } from "../Services/Api";
 
 const Register = () => {
   return (

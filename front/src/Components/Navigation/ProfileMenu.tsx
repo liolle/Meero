@@ -1,4 +1,4 @@
-import { Auth } from "@/src/Services/Auth"
+import { Auth } from "@/src/Services/Api"
 import { DropdownMenu } from "@kobalte/core/dropdown-menu"
 import { useNavigate } from "@solidjs/router"
 
