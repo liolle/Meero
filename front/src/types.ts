@@ -18,6 +18,14 @@ export class UserSession {
 export class CPower {
   id:number
   name: string
+
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  static fromJson(content: Object): CPower {
+    return new CPower(content["name"]);
+  }
 }
 
 export class CHero {
@@ -25,5 +33,38 @@ export class CHero {
   name:string
   alias:string
   powers: Array<CPower>
+  bio:string
+  profileImage:string
+
+  constructor(
+    id: number,
+    name: string,
+    alias: string,
+    powers: Array<CPower>,
+    bio: string,
+    profileImage: string
+  ) {
+    this.id = id;
+    this.name = name;
+    this.alias = alias;
+    this.powers = powers;
+    this.bio = bio;
+    this.profileImage = profileImage;
+  }
+
+  static fromJson(content: Object): CHero {
+    const powers = (content["powers"] || []).map((power: any) =>
+      CPower.fromJson(power)
+    );
+
+    return new CHero(
+      content["id"],
+      content["name"],
+      content["alias"],
+      powers,
+      content["bio"],
+      content["profileImage"]
+    );
+  }
 }
 

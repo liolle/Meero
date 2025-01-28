@@ -5,3 +5,9 @@ import { twMerge } from "tailwind-merge"
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
+
+export function truncate (value:string){
+  if (value.length<10) {return value}
+  value = value.slice(0,8) + "..."
+  return value
+}

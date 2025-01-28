@@ -19,7 +19,7 @@ const ProfileMenu = ()=>{
       <DropdownMenu>
         <DropdownMenu.Trigger>
           <div 
-            class="rounded-full h-[3rem] w-[3rem] bg-neutral-600 flex justify-center items-center select-none cursor-pointer text-mono font-bold text-xl text-neutral-200 hover:text-neutral-800 hover:bg-neutral-400">
+            class="rounded-full h-[3rem] w-[3rem] bg-neutral-600 flex justify-center items-center select-none cursor-pointer text-mono font-bold text-xl bg-neutral-800 text-neutral-200 hover:bg-[var(--accent)]">
             <span>
               P
             </span>
@@ -27,14 +27,14 @@ const ProfileMenu = ()=>{
         </DropdownMenu.Trigger>
 
         <DropdownMenu.Portal>
-          <DropdownMenu.Content class=" flex flex-col gap-2 select-none rounded-[.5rem] py-4 w-[8rem] bg-neutral-600 mt-[.5rem] text-mono text-md text-neutral-200">
-            <DropdownMenu.Item class=" hover:bg-neutral-800 text-neutral-200 px-2 cursor-pointer">
+          <DropdownMenu.Content class=" z-20 flex py-4 flex-col gap-[.5rem] select-none rounded-[.5rem] w-[8rem] bg-neutral-800 mt-[.5rem] text-mono text-md text-neutral-200 font-bold overflow-hidden">
+            <DropdownMenu.Item class=" hover:text-[var(--accent)] px-4 py-2 cursor-pointer ">
               <div onClick={goToProfile}>
                 Profile
               </div>
             </DropdownMenu.Item>
 
-            <DropdownMenu.Item class=" hover:bg-neutral-800 text-neutral-200 px-2 cursor-pointer">
+            <DropdownMenu.Item class=" hover:text-[var(--accent)] px-4 py-2 cursor-pointer">
               <div onClick={logout}>
                 Logout
               </div>

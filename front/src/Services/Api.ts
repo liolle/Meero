@@ -1,5 +1,5 @@
 
-import { UserSession } from "../types";
+import { CHero, CPower, UserSession } from "../types";
 import { setSession } from "../App";
 
 export const Auth = {
@@ -81,6 +81,42 @@ export const Auth = {
     setSession(null)
 
   }
-
 }
 
+export const API = {
+  Heroes : {
+    GetAll: async function ():Promise<Array<CHero>>{
+
+      try {
+        const response = await fetch("http://localhost:5086/Hero/All?includePowers=true", {
+          method: "GET",
+        });
+
+        if (response.status != 200){return []}
+        const content = await response.json() as Array<Object>
+
+        return content.map((value)=>CHero.fromJson(value))
+
+      } catch (error) {
+        console.log(error)
+      }
+    },
+  },
+  Powers: {
+    GetAll: async function():Promise<Array<CPower>>{
+
+      try {
+        const response = await fetch("http://localhost:5086/Power/All", {
+          method: "GET",
+        });
+
+        if (response.status != 200){return []}
+        const content = await response.json() as Array<Object>
+        console.log(content)
+        return content.map((value)=>CPower.fromJson(value))
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+}

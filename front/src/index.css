@@ -21,6 +21,10 @@
   display: none; /* For Chrome, Safari, and newer Edge versions */
 }
 
+.power-badge {
+  white-space: nowrap;
+}
+
 
 @layer base {
   :root {
