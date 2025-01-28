@@ -2,6 +2,8 @@ import { session } from "@/src/App"
 import Logo from "@/src/Components/Logo"
 import { useNavigate } from "@solidjs/router"
 import ProfileMenu from "@/src/Components/Navigation/ProfileMenu"
+import { Show } from "solid-js"
+import { Role } from "@/src/types"
 
 const NavBar = ()=>{
   const navigate = useNavigate()
@@ -11,6 +13,14 @@ const NavBar = ()=>{
 
   function goToEvents(e:MouseEvent){
     navigate('/Events')
+  }
+
+  function goToHeroes(e:MouseEvent){
+    navigate('/Heros')
+  }
+
+  function goToPowers(e:MouseEvent){
+    navigate('/Powers')
   }
 
   return (
@@ -25,6 +35,15 @@ const NavBar = ()=>{
             <li onClick={goToEvents}>
               <span>Events</span>
             </li>
+            {!!session() }
+            <Show when={session() && session().role == Role.Admin} fallback={<></>}>
+              <li onClick={goToHeroes}>
+                <span>Heroes</span>
+              </li>
+              <li onClick={goToPowers}>
+                <span>Powers</span>
+              </li>
+            </Show>
           </ul>
         </div>
         {

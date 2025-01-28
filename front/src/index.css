@@ -12,6 +12,15 @@
   color:#222222
 }
 
+.scrollbar-hidden{
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and newer Edge versions */
+}
+
 
 @layer base {
   :root {
