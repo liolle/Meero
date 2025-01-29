@@ -41,6 +41,6 @@ public class HeroController(IHeroService h) : Controller
             return Ok(new{message=e.Message});
         }
 
-        return Ok();
+        return Ok(new{message=""});
     }
 }

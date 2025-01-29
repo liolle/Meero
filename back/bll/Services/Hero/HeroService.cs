@@ -55,7 +55,7 @@ public class HeroService (IDataContext context): IHeroService
         }
         catch (DbUpdateException dbEx)
         {
-            // Check for specific SQL exception (e.g., duplicate index on email)
+            // Check for specific SQL exception (e.g., duplicate index on power name)
             if (dbEx.InnerException is SqlException sqlEx && sqlEx.Number == 2601)
             {
                 throw new DuplicatePowerException();

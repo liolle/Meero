@@ -1,3 +1,4 @@
+using meero.bll;
 using meero.bll.Service;
 using meero.entity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +20,23 @@ public class PowerController(IPowerService p) : Controller
 
     [HttpPost]
     public IActionResult Add([FromBody] PowerModel model){
-        return Ok(model);
+        try
+        {
+            PowerEntity power = new(){
+                name=model.Name,
+            };
+
+            p.Insert(power);
+        }
+        catch (DuplicatePowerException e)
+        {
+             return Ok(new{message=e.Message});
+        }
+        catch (DatabaseException e)
+        {
+            return Ok(new{message=e.Message});
+        }
+
+        return Ok(new{message=""});
     }
 }
