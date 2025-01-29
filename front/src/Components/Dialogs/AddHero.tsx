@@ -148,7 +148,7 @@ const Form = (props:Props)=>{
       </div>
 
       {/* Powers */}
-
+      <div class=" text-md font-bold text-gray-700">Powers</div>
       <div class="flex w-full flex-wrap gap-1 justify-between">
         {props.powers.map((power) => (
           <PowerBadge power={power} size={SIZE.sm} onClick={handleBadgeClick} active={selected[power.name]}/>

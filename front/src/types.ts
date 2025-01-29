@@ -24,7 +24,7 @@ export class CPower {
     this.id = id
   }
 
-  static fromJson(content: Object): CPower {
+  static fromJson(content: Record<string, any>): CPower {
     return new CPower(content["name"],content["id"]);
   }
 }
@@ -53,7 +53,7 @@ export class CHero {
     this.profileImage = profileImage;
   }
 
-  static fromJson(content: Object): CHero {
+  static fromJson(content: Record<string, any>): CHero {
     const powers = (content["powers"] || []).map((power: any) =>
       CPower.fromJson(power)
     );
@@ -67,6 +67,42 @@ export class CHero {
       content["profileImage"]
     );
   }
+}
 
+
+export class CLocation {
+    address: string;
+    city: string;
+    country: string;
+    locationImage: string;
+    googleFrame: string;
+    isVirtual: boolean;
+
+    constructor(
+        address: string,
+        city: string,
+        country: string,
+        locationImage: string = "",
+        googleFrame: string = "",
+        isVirtual: boolean = false
+    ) {
+        this.address = address;
+        this.city = city;
+        this.country = country;
+        this.locationImage = locationImage;
+        this.googleFrame = googleFrame;
+        this.isVirtual = isVirtual;
+    }
+
+    static fromJson(content: Record<string, any>): CLocation {
+        return new CLocation(
+            content.address || "",
+            content.city || "",
+            content.country || "",
+            content.locationImage || "",
+            content.googleFrame || "",
+            content.isVirtual || false
+        );
+    }
 }
 

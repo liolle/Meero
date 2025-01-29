@@ -1,8 +1,9 @@
 
-import { CHero, CPower, UserSession } from "../types";
+import { CHero, CLocation, CPower, UserSession } from "../types";
 import { setSession } from "../App";
 import Hero, { setHeroes } from "../Pages/Hero";
 import { setPowers } from "../Pages/Power";
+import Location, { setLocations } from "../Pages/Locations";
 
 export const Auth = {
   Login :async function(email:string,password:string):Promise<string>{
@@ -124,7 +125,6 @@ export const API = {
         }
 
         return content.message      
-        return ""
       } catch (error) {
         console.log(error)
       }
@@ -168,5 +168,49 @@ export const API = {
         console.log(error)
       }
     }
+  },
+  Location: {
+    GetAll: async function():Promise<Array<CLocation>>{
+      try {
+        const response = await fetch("http://localhost:5086/Location/All", {
+          method: "GET",
+        });
+
+        if (response.status != 200){return []}
+        const content = await response.json() as Array<Record<string,any>>
+        return content.map((value)=>CLocation.fromJson(value))
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    Add : async function(location:CLocation):Promise<string> {
+
+      try {
+        const response = await fetch("http://localhost:5086/Location/Add", {
+          credentials: "include",
+          method: "POST",
+          body: JSON.stringify({
+            Address:location.address,
+            City:location.city,
+            Country:location.country,
+            LocationImage:location.locationImage || "",
+            GoogleFrame:location.googleFrame || "",
+            IsVirtual:location.isVirtual
+          }),
+          headers:{"Content-type": "application/json"}
+        });
+
+        const content = await response.json()
+
+        if (!content.message){
+          setLocations((prev)=>[...prev,location]) 
+        }
+
+        return content.message      
+      } catch (error) {
+        console.log(error)
+      }
+    }
   }
+
 }

@@ -11,6 +11,7 @@ import Hero from "./Pages/Hero";
 import Power from "./Pages/Power";
 import Event from "./Pages/Events";
 import { Auth } from "./Services/Api";
+import Location from "./Pages/Locations";
 
 export const [session,setSession] = createSignal<UserSession>()
 
@@ -84,6 +85,7 @@ render(
         <Route path="" component={AdminGuard} >
           <Route path="/Heros" component={Hero} />
           <Route path="/Powers" component={Power} />
+          <Route path="/Locations" component={Location} />
         </Route >
       </Route >
 

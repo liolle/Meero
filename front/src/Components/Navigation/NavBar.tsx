@@ -23,6 +23,10 @@ const NavBar = ()=>{
     navigate('/Powers')
   }
 
+  function goToLocations(e:MouseEvent){
+    navigate('/Locations')
+  }
+
   return (
     <div class="h-[5rem] w-full ">
       <div class="px-4 py-2 w-full h-full flex items-center justify-between">
@@ -42,6 +46,9 @@ const NavBar = ()=>{
               </li>
               <li onClick={goToPowers}>
                 <span>Powers</span>
+              </li>
+              <li onClick={goToLocations}>
+                <span>Locations</span>
               </li>
             </Show>
           </ul>
