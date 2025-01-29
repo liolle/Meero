@@ -21,6 +21,10 @@ public class HeroController(IHeroService h) : Controller
     [HttpPost]
     public IActionResult Add([FromBody] HeroModel model){
 
+        if (!ModelState.IsValid){
+            return BadRequest(ModelState);
+        }
+
         try
         {
             HeroEntity hero = new(){

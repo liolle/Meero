@@ -55,6 +55,7 @@ builder.Services.AddCors(options=>{
 builder.Services.AddScoped<IJWTService, JWTService>();
 builder.Services.AddScoped(typeof(IPasswordHasher<>), typeof(PasswordHasher<>));
 
+builder.Services.AddTransient<ILocationService,LocationService>();
 builder.Services.AddTransient<IPowerService,PowerService>();
 builder.Services.AddTransient<IHeroService,HeroService>();
 builder.Services.AddTransient<IUserService,UserService>();

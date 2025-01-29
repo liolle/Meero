@@ -14,11 +14,13 @@ public class DataContext : DbContext, IDataContext
     public DbSet<UserEntity> Users {get;set;}
     public DbSet<HeroEntity> Heroes {get;set;}
     public DbSet<PowerEntity> Powers {get;set;}
+    public DbSet<LocationEntity> Locations {get;set;}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new UserConfig());
         modelBuilder.ApplyConfiguration(new HeroConfig());
+        modelBuilder.ApplyConfiguration(new LocationConfig());
         modelBuilder.ApplyConfiguration(new PowerConfig());
     }
 }
