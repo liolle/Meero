@@ -19,12 +19,13 @@ export class CPower {
   id:number
   name: string
 
-  constructor(name: string) {
+  constructor(name: string,id:number) {
     this.name = name;
+    this.id = id
   }
 
   static fromJson(content: Object): CPower {
-    return new CPower(content["name"]);
+    return new CPower(content["name"],content["id"]);
   }
 }
 
@@ -66,5 +67,6 @@ export class CHero {
       content["profileImage"]
     );
   }
+
 }
 

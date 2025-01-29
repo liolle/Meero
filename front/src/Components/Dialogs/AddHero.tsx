@@ -1,8 +1,11 @@
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/src/components/ui/dialog";
-import { CHero } from "@/src/types";
+import { CHero, CPower } from "@/src/types";
 import { Dialog } from "@kobalte/core/dialog";
-import { createSignal } from "solid-js";
+import { createSignal, Setter } from "solid-js";
 import { createStore } from "solid-js/store";
+import PowerBadge, { SIZE } from "../Badges/PowerBadge";
+import Hero from "@/src/Pages/Hero";
+import { API, Auth } from "@/src/Services/Api";
 
 const [formElements, setFormElements] = createStore<CHero>({
   id:0,
@@ -13,6 +16,9 @@ const [formElements, setFormElements] = createStore<CHero>({
   profileImage:""
 });
 
+const selected = {}
+
+
 function resetForm(){
   setFormElements({
     id:0,
@@ -22,10 +28,18 @@ function resetForm(){
     bio:"",
     profileImage:""
   })
+
+  for(const key in selected){
+    delete selected[key]
+  }
 }
 
-const AddHeroDialog = () =>{
-  const [open, setOpen] = createSignal(false);
+interface Props {
+  powers: Array<CPower>
+}
+
+const [open, setOpen] = createSignal(false);
+const AddHeroDialog = (props:Props) =>{
   return (
     <Dialog modal={true} open={open()} onOpenChange={setOpen}>
       <DialogTrigger >
@@ -40,7 +54,7 @@ const AddHeroDialog = () =>{
             Complete all fields to add ad the hero.
           </DialogDescription>
         </DialogHeader>
-        <Form/>
+        <Form powers={props.powers}/>
 
       </DialogContent>
     </Dialog>
@@ -49,11 +63,38 @@ const AddHeroDialog = () =>{
 }
 
 
-const Form = ()=>{
+const Form = (props:Props)=>{
+
 
   function handleSubmit(e:SubmitEvent){
     e.preventDefault()
+    const pws:Array<CPower> = []
+    const hero = new CHero(
+      formElements.id,
+      formElements.name,
+      formElements.alias,
+      pws,
+      formElements.bio,
+      formElements.profileImage,
+    )
+
+    for (const key in selected){
+      pws.push(selected[key])
+    }
+    API.Heroes.Add(hero)
     resetForm()
+    setOpen(false)
+  }
+
+  function handleBadgeClick(e:MouseEvent,setActive:Setter<boolean>, power:CPower){
+    const name = power.name
+    if (selected[name]){
+      setActive(false)
+      delete selected[name]
+    }else{
+      setActive(true)
+      selected[name] = power
+    }
   }
 
   return (
@@ -107,27 +148,13 @@ const Form = ()=>{
       </div>
 
       {/* Powers */}
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Powers</label>
-        {formElements.powers.map((power, index) => (
-          <div  class="flex gap-2 mb-2">
-            <input
-              type="text"
-              value={power.name}
-              //onInput={(e) => updatePower(index, "name", e.currentTarget.value)}
-              class="flex-1 p-2 border rounded-md"
-              placeholder="Power name"
-            />
-          </div>
+
+      <div class="flex w-full flex-wrap gap-1 justify-between">
+        {props.powers.map((power) => (
+          <PowerBadge power={power} size={SIZE.sm} onClick={handleBadgeClick} active={selected[power.name]}/>
         ))}
-        <button
-          type="button"
-          //onClick={addPower}
-          class="mt-2 text-sm text-blue-500 hover:underline"
-        >
-          + Add Power
-        </button>
       </div>
+
 
       {/* Buttons */}
       <div class="flex justify-between">

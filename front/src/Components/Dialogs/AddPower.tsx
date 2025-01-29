@@ -1,31 +1,24 @@
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/src/components/ui/dialog";
-import { CHero } from "@/src/types";
+import { API } from "@/src/Services/Api";
+import { CHero, CPower } from "@/src/types";
 import { Dialog } from "@kobalte/core/dialog";
 import { createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 
-const [formElements, setFormElements] = createStore<CHero>({
+const [formElements, setFormElements] = createStore<CPower>({
   id:0,
   name:"",
-  alias:"",
-  powers: [],
-  bio:"",
-  profileImage:""
 });
 
 function resetForm(){
   setFormElements({
     id:0,
     name:"",
-    alias:"",
-    powers: [],
-    bio:"",
-    profileImage:""
   })
 }
 
+const [open, setOpen] = createSignal(false);
 const AddPowerDialog = () =>{
-  const [open, setOpen] = createSignal(false);
   return (
     <Dialog modal={true} open={open()} onOpenChange={setOpen}>
       <DialogTrigger >
@@ -49,7 +42,9 @@ const Form = ()=>{
 
   function handleSubmit(e:SubmitEvent){
     e.preventDefault()
+    API.Powers.Add(formElements.name)
     resetForm()
+    setOpen(false)
   }
 
   return (
@@ -60,7 +55,8 @@ const Form = ()=>{
         <div  class="flex gap-2 mb-2">
           <input
             type="text"
-            //onInput={(e) => updatePower(index, "name", e.currentTarget.value)}
+            required
+            onInput={(e) => setFormElements("name", e.currentTarget.value)}
             class="flex-1 p-2 border rounded-md"
             placeholder="Power name"
           />

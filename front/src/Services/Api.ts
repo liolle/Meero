@@ -1,6 +1,8 @@
 
 import { CHero, CPower, UserSession } from "../types";
 import { setSession } from "../App";
+import Hero, { setHeroes } from "../Pages/Hero";
+import { setPowers } from "../Pages/Power";
 
 export const Auth = {
   Login :async function(email:string,password:string):Promise<string>{
@@ -79,7 +81,6 @@ export const Auth = {
       method: "POST",
     });
     setSession(null)
-
   }
 }
 
@@ -101,6 +102,33 @@ export const API = {
         console.log(error)
       }
     },
+    Add : async function(h: CHero):Promise<string> {
+      try {
+        const response = await fetch("http://localhost:5086/Hero/Add", {
+          credentials: "include",
+          method: "POST",
+          body: JSON.stringify({
+            Name: h.name || "",
+            Alias: h.alias ,
+            Bio: h.bio || "",
+            SelectedPowerIds: h.powers?.map(val => val.id) || [],
+            ProfileImage: h.profileImage || ""
+          }),  
+          headers:{"Content-type": "application/json"}
+        });
+
+        const content = await response.json()
+
+        if (!content.message){
+          setHeroes((prev)=>[...prev,h]) 
+        }
+
+        return content.message      
+        return ""
+      } catch (error) {
+        console.log(error)
+      }
+    }
   },
   Powers: {
     GetAll: async function():Promise<Array<CPower>>{
@@ -112,8 +140,30 @@ export const API = {
 
         if (response.status != 200){return []}
         const content = await response.json() as Array<Object>
-        console.log(content)
         return content.map((value)=>CPower.fromJson(value))
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    Add : async function(p:string):Promise<string> {
+      try {
+        const response = await fetch("http://localhost:5086/Power/Add", {
+          credentials: "include",
+          method: "POST",
+          body: JSON.stringify({
+            Name:p
+          }),
+          headers:{"Content-type": "application/json"}
+        });
+
+        const content = await response.json()
+
+        if (!content.message){
+          //wrong id will get fix on the next power/all request
+          setPowers((prev)=>[...prev,new CPower(p,0)]) 
+        }
+
+        return content.message      
       } catch (error) {
         console.log(error)
       }

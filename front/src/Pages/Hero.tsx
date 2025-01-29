@@ -4,14 +4,14 @@ import { CHero, CPower } from "../types"
 import { API } from "../Services/Api"
 import AddHeroDialog from "../Components/Dialogs/AddHero"
 import PowerBadge, { SIZE } from "../Components/Badges/PowerBadge"
-const [powers,setPowers] = createSignal<Array<CPower>>(null)
+import { powers, setPowers } from "./Power"
+export const [heroes,setHeroes] = createSignal<Array<CHero>>(null)
 const Hero = () => {
-  const [heroes,setHeroes] = createSignal<Array<CHero>>(null)
   onMount(async ()=>{
     try {
       setHeroes(await API.Heroes.GetAll()) 
       setPowers(await API.Powers.GetAll()) 
-          } catch (error) {
+    } catch (error) {
       console.log(error) 
     }
   })
@@ -21,7 +21,7 @@ const Hero = () => {
       <div class="h-[calc(100vh-80px)] w-full flex flex-col  overflow-y-scroll scrollbar-hidden">
         <div class="flex h-fit min-h-screen flex-col ">
           <div class="px-8 sticky left-0 top-0 z-10  backdrop-blur-sm "> 
-            <AddHeroDialog/>
+            <AddHeroDialog powers={powers()}/>
           </div>
 
           <div class="h-full w-full flex justify-start items-start gap-8 px-8 pt-4 flex-wrap">
@@ -65,7 +65,7 @@ const HeroCard = (props:HeroCardProps)=>{
             <h4 class=" text-md text-gray-800 font-semibold">Powers</h4>
             <div class="flex w-full flex-wrap gap-1 justify-between">
               {props.hero.powers.map((power) => (
-                <PowerBadge size={SIZE.sm} power={power}/>
+                <PowerBadge size={SIZE.sm} power={power} />
               ))}
             </div>
           </div>

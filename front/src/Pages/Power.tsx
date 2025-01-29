@@ -5,13 +5,11 @@ import { API } from "../Services/Api"
 import AddPowerDialog from "../Components/Dialogs/AddPower"
 import PowerBadge, { SIZE } from "../Components/Badges/PowerBadge"
 
-
+export const [powers,setPowers] = createSignal<Array<CPower>>(null)
 const Power = () => {
-  const [powers,setPowers] = createSignal<Array<CPower>>(null)
   onMount(async ()=>{
     try {
       setPowers(await API.Powers.GetAll()) 
-      //setPowers(Array.from({length:204},()=>new CPower("xyz")))
     } catch (error) {
       console.log(error) 
     }
@@ -29,7 +27,7 @@ const Power = () => {
             <div class="flex gap-4 items-start justify-evenly flex-wrap">
               <For each={powers()} fallback={<></>}>
                 {(item) => (
-                <PowerBadge size={SIZE.lg} power={item}/>
+                <PowerBadge size={SIZE.lg} power={item} />
                 )}
               </For>
 
