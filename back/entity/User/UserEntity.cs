@@ -9,4 +9,6 @@ public class UserEntity
     public required string Email { get; set; }
     public required string Password { get; set; }
     public required ERole Role { get; set; }
+
+    public ICollection<EventEntity> Events {get;set;} = new List<EventEntity>();
 }

@@ -73,5 +73,22 @@ public static class RouteConfig
             name: "get-all-locations",
             pattern: "{controller=Location}/{action=All}/{id?}"
         );
+
+        // Event
+        app.MapControllerRoute(
+            name: "add-event",
+            pattern: "{controller=Event}/{action=Add}/{id?}"
+        ).RequireAuthorization()
+        .RequireCors("auth-input");
+
+        app.MapControllerRoute(
+            name: "get-event-by-id",
+            pattern: "{controller=Event}/{action=Get}/{id?}"
+        );
+
+        app.MapControllerRoute(
+            name: "get-all-event",
+            pattern: "{controller=Event}/{action=All}/{id?}"
+        );
     }
 }

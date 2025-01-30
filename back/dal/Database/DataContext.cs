@@ -15,6 +15,7 @@ public class DataContext : DbContext, IDataContext
     public DbSet<HeroEntity> Heroes {get;set;}
     public DbSet<PowerEntity> Powers {get;set;}
     public DbSet<LocationEntity> Locations {get;set;}
+     public DbSet<EventEntity> Events {get;set;}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -22,5 +23,6 @@ public class DataContext : DbContext, IDataContext
         modelBuilder.ApplyConfiguration(new HeroConfig());
         modelBuilder.ApplyConfiguration(new LocationConfig());
         modelBuilder.ApplyConfiguration(new PowerConfig());
+        modelBuilder.ApplyConfiguration(new EventConfig());
     }
 }

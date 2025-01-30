@@ -33,7 +33,7 @@ namespace dal.Migrations
 
                     b.HasIndex("PowersId");
 
-                    b.ToTable("HeroEntityPowerEntity");
+                    b.ToTable("HeroEntityPowerEntity", (string)null);
                 });
 
             modelBuilder.Entity("LocationEntity", b =>

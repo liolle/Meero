@@ -12,4 +12,5 @@ public class HeroEntity
 
     // Hero powers
     public ICollection<PowerEntity> Powers { get; set; } = new List<PowerEntity>();
+    public ICollection<EventEntity> Events {get;set;} = new List<EventEntity>();
 }
