@@ -4,7 +4,7 @@ using meero.entity;
 using Microsoft.AspNetCore.Mvc;
 namespace meero.api.controllers;
 
-public class UserController(IAuthService auth, IConfiguration conf) : Controller
+public class UserController(IAuthService auth, IConfiguration conf) : ControllerBase
 {
     
     [HttpPost]

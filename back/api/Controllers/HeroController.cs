@@ -4,7 +4,7 @@ using meero.entity;
 using Microsoft.AspNetCore.Mvc;
 namespace meero.api.controllers;
 
-public class HeroController(IHeroService h) : Controller
+public class HeroController(IHeroService h) : ControllerBase
 {
     [HttpGet]
     public IActionResult All([FromQuery] bool includePowers)

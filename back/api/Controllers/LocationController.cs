@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace meero.api.controllers;
 
-public class LocationController(ILocationService l) : Controller
+public class LocationController(ILocationService l) : ControllerBase
 {
     [HttpGet]
     public IActionResult All(){

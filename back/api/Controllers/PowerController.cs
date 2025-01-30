@@ -4,7 +4,7 @@ using meero.entity;
 using Microsoft.AspNetCore.Mvc;
 namespace meero.api.controllers;
 
-public class PowerController(IPowerService p) : Controller
+public class PowerController(IPowerService p) : ControllerBase
 {
     [HttpGet]
     public IActionResult All()
