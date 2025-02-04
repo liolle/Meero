@@ -1,8 +1,10 @@
 using meero.bll;
 using meero.bll.Service;
 using meero.entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace meero.api.controllers;
+
 
 public class HeroController(IHeroService h) : ControllerBase
 {
@@ -18,7 +20,9 @@ public class HeroController(IHeroService h) : ControllerBase
         return Ok(h.GetById(id,includePowers));
     }
 
+    
     [HttpPost]
+    [Authorize]
     public IActionResult Add([FromBody] HeroModel model){
 
         if (!ModelState.IsValid){

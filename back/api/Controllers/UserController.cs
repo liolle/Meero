@@ -1,6 +1,7 @@
 using meero.bll;
 using meero.bll.Service;
 using meero.entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace meero.api.controllers;
 
@@ -28,16 +29,17 @@ public class UserController(IAuthService auth, IConfiguration conf) : Controller
     public IActionResult Login ([FromBody] UserModel model){
         try
         {
-            string token = auth.Login(model);
-
-            HttpContext.Response.Cookies.Append(conf["AUTH_TOKEN_NAME"]!, token, new CookieOptions
+            string jwtToken = auth.Login(model);
+            var cookieOptions = new CookieOptions
             {
-                HttpOnly = true,   // Prevents JavaScript access to the cookie
-                Secure = false,     // Ensures the cookie is sent only over HTTPS
-                SameSite = SameSiteMode.Strict, // Prevents CSRF attacks
-                Expires = DateTime.UtcNow.AddHours(1) // Set cookie expiration
-            });
-            return Ok();
+                HttpOnly = true, // 🔒 Prevents JavaScript access (XSS protection)
+                Secure = true,   // 🔒 Send only over HTTPS (set to false in development)
+                SameSite = SameSiteMode.Strict, // Prevent CSRF attacks
+                Expires = DateTime.UtcNow.AddHours(1) // Set cookie expiration same as JWT expiration
+            };
+
+            Response.Cookies.Append(conf["AUTH_TOKEN_NAME"], jwtToken, cookieOptions);
+            return Ok(new{message="Logged in successfully!"});
         }
         catch (InvalidCredentialException e)
         {
@@ -50,10 +52,9 @@ public class UserController(IAuthService auth, IConfiguration conf) : Controller
     }
 
     [HttpPost]
+    [Authorize]
     public IActionResult Auth (){
-
         string? token;
-
 
         if (!Request.Cookies.TryGetValue(conf["AUTH_TOKEN_NAME"]!, out token))
         {

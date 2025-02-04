@@ -15,7 +15,7 @@ public static class RouteConfig
         app.MapControllerRoute(
             name: "auth",
             pattern: "{controller=User}/{action=Auth}/{id?}"
-        ).RequireAuthorization()
+        )
         .RequireCors("auth-input");
 
         app.MapControllerRoute(
@@ -27,8 +27,8 @@ public static class RouteConfig
         app.MapControllerRoute(
             name: "add-hero",
             pattern: "{controller=Hero}/{action=Add}/{id?}"
-        ).RequireAuthorization()
-        .RequireCors("auth-input");
+        );
+        
 
         app.MapControllerRoute(
             name: "get-hero-by-id",
@@ -44,7 +44,7 @@ public static class RouteConfig
         app.MapControllerRoute(
             name: "add-power",
             pattern: "{controller=Power}/{action=Add}/{id?}"
-        ).RequireAuthorization()
+        )
         .RequireCors("auth-input");
 
         app.MapControllerRoute(
@@ -61,7 +61,7 @@ public static class RouteConfig
         app.MapControllerRoute(
             name: "add-location",
             pattern: "{controller=Location}/{action=Add}/{id?}"
-        ).RequireAuthorization()
+        )
         .RequireCors("auth-input");
 
         app.MapControllerRoute(
@@ -78,7 +78,7 @@ public static class RouteConfig
         app.MapControllerRoute(
             name: "add-event",
             pattern: "{controller=Event}/{action=Add}/{id?}"
-        ).RequireAuthorization()
+        )
         .RequireCors("auth-input");
 
         app.MapControllerRoute(

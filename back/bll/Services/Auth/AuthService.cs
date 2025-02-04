@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using meero.entity;
 namespace meero.bll.Service;
 
@@ -29,7 +30,6 @@ public class AuthService(IUserService us, IHashService hashService, IJWTService 
         ApplicationUser idUser = new (){Name=user.Name, Role=ERole.User};
         string hashedPassword = hashService.HashPassword(idUser,user.Password);
         UserEntity userEntity = new(){Name=user.Name,Email=user.Email,Password=hashedPassword,Role=idUser.Role};
-     
         us.Insert(userEntity);
     }
 }

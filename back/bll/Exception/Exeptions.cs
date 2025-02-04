@@ -49,3 +49,10 @@ public sealed class InvalidTokenException : ApiException
     {
     }
 }
+
+public sealed class TokenException : ApiException
+{
+    public TokenException() : base("Could not generate token.")
+    {
+    }
+}

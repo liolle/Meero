@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using meero.entity;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 namespace meero.bll.Service;
@@ -17,52 +18,48 @@ public class JWTService : IJWTService
         _secretKey = configuration["JWT_KEY"];
         _issuer = configuration["JWT_ISSUER"];
         _audience = configuration["JWT_AUDIENCE"];
+
+
     
     }
 
     public string generate(ApplicationUser applicationUser)
     {
-        if (_secretKey == null)
-        {
-            throw new ArgumentNullException(_secretKey, "The 'JWT_SECRET' configuration value is missing.");
-        }
-        if (_issuer == null)
-        {
-            throw new ArgumentNullException(_issuer, "The 'JWT_ISSUER' configuration value is missing.");
-        }
-        if (_audience == null)
-        {
-            throw new ArgumentNullException(_audience, "The 'JWT_AUDIENCE' configuration value is missing.");
-        }
-
         string? name = applicationUser.Name;
         if (name == null){
             name = "";
         }
 
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes(_secretKey);
+        if (_secretKey is null){
+            throw new TokenException();
+        }
 
-        // Define token claims
-        var tokenDescriptor = new SecurityTokenDescriptor
+        List<Claim> claims = new()
         {
-            Subject = new ClaimsIdentity(new[]
-            {
-                new Claim(ClaimTypes.Name, name),
-                new Claim(ClaimTypes.NameIdentifier, applicationUser.Id.ToString()),
-                new Claim(ClaimTypes.Role, applicationUser.Role.ToString())
-            }),
-            Expires = DateTime.UtcNow.AddHours(1), 
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-            Issuer = _issuer,
-            Audience = _audience
-
+            new Claim(ClaimTypes.Name, name),
+            new Claim(ClaimTypes.NameIdentifier, applicationUser.Id.ToString()),
+            new Claim(ClaimTypes.Role, applicationUser.Role.ToString())
         };
 
-        // Generate Token
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var principal = new ClaimsPrincipal(identity);
+
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
+
+        var token = new JwtSecurityToken(
+            issuer: _issuer,
+            audience: _audience,
+            claims: principal.Claims, 
+            expires: DateTime.UtcNow.AddHours(1),
+            signingCredentials: credentials
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token); 
+
     }
+
 
     public ApplicationUser validate(string token)
     {
@@ -99,10 +96,10 @@ public class JWTService : IJWTService
             SecurityToken? validatedToken;
             ClaimsPrincipal? principal = tokenHandler.ValidateToken(token, validationParameters, out validatedToken);
 
-            if (validatedToken is not JwtSecurityToken jwtToken)
-            {
-                throw new InvalidTokenException();
-            }
+           
+           // here the as keyword return null if validatedToken is not a JwtSecurityToken, avoiding exception
+            var jwtToken = validatedToken as JwtSecurityToken;
+            if (jwtToken == null) { throw new InvalidTokenException(); }
 
             Claim? userIdClaim = principal.FindFirst(ClaimTypes.NameIdentifier);
             Claim? nameClaim = principal.FindFirst(ClaimTypes.Name);

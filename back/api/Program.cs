@@ -1,10 +1,11 @@
+using System.Text;
 using DotNetEnv;
 using meero.bll.Service;
 using meero.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Net.Http.Headers;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -33,12 +34,34 @@ builder.Services.AddScoped<IDataContext,DataContext>(
 
 // JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-.AddJwtBearer(jwtOptions =>
-{
-	jwtOptions.Authority = configuration["JWT_ISSUER"];
-	jwtOptions.Audience = configuration["JWT_AUDIENCE"];
-    jwtOptions.RequireHttpsMetadata =false; // Allow HTTP in development
-});
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["JWT_ISSUER"],
+            ValidAudience = builder.Configuration["JWT_AUDIENCE"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["JWT_KEY"]))
+        };
+
+        // ✅ Extract JWT from Cookie instead of Authorization header
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                string AUTH_TOKEN_NAME = builder.Configuration["AUTH_TOKEN_NAME"];
+                if (context.Request.Cookies.ContainsKey(AUTH_TOKEN_NAME))
+                {
+                    context.Token = context.Request.Cookies[AUTH_TOKEN_NAME];
+                }
+                return Task.CompletedTask;
+            }
+        };
+    });
 
 // Cors
 builder.Services.AddCors(options=>{
@@ -46,7 +69,7 @@ builder.Services.AddCors(options=>{
         policy
         .WithOrigins(["http://localhost:3000","http://localhost"])
         .AllowCredentials()
-        .WithHeaders(HeaderNames.ContentType, "Authorization")
+        .WithHeaders(Microsoft.Net.Http.Headers.HeaderNames.ContentType, "Authorization")
         .WithMethods(["POST","OPTIONS"]);
     });
 });
@@ -62,15 +85,14 @@ builder.Services.AddTransient<IUserService,UserService>();
 builder.Services.AddTransient<IHashService,HasherService>();
 builder.Services.AddTransient<IAuthService,AuthService>();
 
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.UseCors();
+app.UseAuthentication();
 app.UseAuthorization();
 
 RouteConfig.RegisterRoutes(app);

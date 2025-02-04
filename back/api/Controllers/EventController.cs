@@ -1,4 +1,5 @@
 using meero.entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace meero.api.controllers;
 
@@ -11,6 +12,7 @@ public class EventController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public IActionResult Add([FromBody] EventModel model){
         //TODO
         return Ok();

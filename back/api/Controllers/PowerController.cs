@@ -1,6 +1,7 @@
 using meero.bll;
 using meero.bll.Service;
 using meero.entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace meero.api.controllers;
 
@@ -19,6 +20,7 @@ public class PowerController(IPowerService p) : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public IActionResult Add([FromBody] PowerModel model){
         try
         {
